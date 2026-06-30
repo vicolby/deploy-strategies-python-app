@@ -1,0 +1,55 @@
+version: '3'
+
+vars:
+  APP: app.main:app
+
+tasks:
+  install:
+    desc: Install dependencies with uv
+    cmds:
+      - uv pip install -e ".[test]"
+
+  dev:
+    desc: Run dev server with auto-reload
+    cmds:
+      - uv run uvicorn {{.APP}} --reload
+
+  test:
+    desc: Run pytest suite
+    cmds:
+      - uv run pytest -q
+
+  lint:
+    desc: Run ruff and mypy
+    cmds:
+      - uv run ruff check app tests
+      - uv run mypy app
+
+  fmt:
+    desc: Format code with ruff
+    cmds:
+      - uv run ruff format app tests
+
+  fmt-check:
+    desc: Check formatting
+    cmds:
+      - uv run ruff format --check app tests
+
+  coverage:
+    desc: Run tests with project coverage >= 90%
+    cmds:
+      - uv run pytest --cov=app --cov-report=term-missing --cov-report=xml -q
+
+  coverage-patch:
+    desc: Check patch coverage >= 85% (requires git)
+    cmds:
+      - |
+        if ! git rev-parse --git-dir > /dev/null 2>&1; then
+          echo "Not a git repository. Skipping patch coverage check."
+          exit 0
+        fi
+        uv run diff-cover coverage.xml --fail-under=85
+
+  check:
+    desc: Run all checks (lint + test)
+    deps: [lint, test]

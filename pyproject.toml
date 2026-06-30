@@ -1,0 +1,57 @@
+[project]
+name = "toy-app"
+version = "0.1.0"
+description = "Toy FastAPI app with async SQLAlchemy, Prometheus, OpenTelemetry"
+requires-python = ">=3.12"
+dependencies = [
+    "fastapi",
+    "uvicorn[standard]",
+    "sqlalchemy[asyncio]>=2.0",
+    "asyncpg",
+    "prometheus-fastapi-instrumentator",
+    "opentelemetry-api",
+    "opentelemetry-sdk",
+    "opentelemetry-instrumentation-fastapi",
+    "opentelemetry-instrumentation-sqlalchemy",
+    "opentelemetry-exporter-otlp",
+]
+
+[project.optional-dependencies]
+test = [
+    "pytest",
+    "pytest-asyncio",
+    "httpx",
+    "testcontainers",
+    "ruff",
+    "mypy",
+    "pytest-cov",
+    "diff-cover[toml]",
+    "asgi-lifespan",
+]
+
+[tool.pytest.ini_options]
+asyncio_mode = "auto"
+
+[tool.ruff]
+line-length = 88
+target-version = "py312"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "N", "W", "UP"]
+
+[tool.coverage.run]
+source = ["app"]
+branch = true
+concurrency = ["greenlet"]
+
+[tool.coverage.report]
+fail_under = 90
+show_missing = true
+skip_covered = false
+
+[tool.mypy]
+python_version = "3.12"
+strict = true
+warn_return_any = true
+warn_unused_ignores = true
+ignore_missing_imports = true
