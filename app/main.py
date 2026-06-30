@@ -29,7 +29,7 @@ trace.set_tracer_provider(provider)
 provider.add_span_processor(SimpleSpanProcessor(ConsoleSpanExporter()))
 
 @asynccontextmanager
-async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
+async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
     async with engine.begin() as conn:
         await conn.run_sync(Base.metadata.create_all)
     async with AsyncSessionLocal() as session:
@@ -44,14 +44,12 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None, None]:
 app = FastAPI(lifespan=lifespan)
 Instrumentator().instrument(app).expose(app)
 
-async def get_db() -> AsyncGenerator[AsyncSession, None]:
+async def get_db() -> AsyncGenerator[AsyncSession]:
     async with AsyncSessionLocal() as session:
         yield session
 
 @app.get("/books", response_model=list[BookOut])
 async def list_books(db: AsyncSession = Depends(get_db)) -> list[BookOut]:
-    import sys
-    print("DEBUG: list_books called, trace =", sys.gettrace())
     result = await db.execute(select(Book))
     return list(result.scalars().all())
 

@@ -2,7 +2,7 @@
 name = "toy-app"
 version = "0.1.0"
 description = "Toy FastAPI app with async SQLAlchemy, Prometheus, OpenTelemetry"
-requires-python = ">=3.12"
+requires-python = ">=3.14"
 dependencies = [
     "fastapi",
     "uvicorn[standard]",
@@ -34,7 +34,7 @@ asyncio_mode = "auto"
 
 [tool.ruff]
 line-length = 88
-target-version = "py312"
+target-version = "py314"
 
 [tool.ruff.lint]
 select = ["E", "F", "I", "N", "W", "UP"]
@@ -50,7 +50,7 @@ show_missing = true
 skip_covered = false
 
 [tool.mypy]
-python_version = "3.12"
+python_version = "3.14"
 strict = true
 warn_return_any = true
 warn_unused_ignores = true
