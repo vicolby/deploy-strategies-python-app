@@ -22,7 +22,9 @@ jobs:
         uses: astral-sh/setup-uv@v3
 
       - name: Install dependencies
-        run: uv pip install -e ".[test]"
+        run: |
+          uv venv
+          uv pip install -e ".[test]"
 
       - name: Run linters
         run: |
