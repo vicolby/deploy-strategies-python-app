@@ -51,3 +51,10 @@ async def test_post_order(client: AsyncClient):
 async def test_post_order_bad_book(client: AsyncClient):
     r = await client.post("/order", json={"user_id": 1, "book_id": 999})
     assert r.status_code == 404
+
+
+@pytest.mark.asyncio
+async def test_health(client: AsyncClient):
+    r = await client.get("/health")
+    assert r.status_code == 200
+    assert r.json() == {"status": "ok"}
