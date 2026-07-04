@@ -9,6 +9,8 @@ from sqlalchemy.orm import declarative_base
 Base = declarative_base()
 
 def build_database(url: str) -> tuple[AsyncEngine, async_sessionmaker[AsyncSession]]:
+    if url.startswith("postgresql://"):
+        url = url.replace("postgresql://", "postgresql+asyncpg://", 1)
     engine = create_async_engine(url, echo=False, future=True)
     session_maker = async_sessionmaker(
         engine,
