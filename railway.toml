@@ -1,0 +1,26 @@
+[build]
+builder = "DOCKERFILE"
+
+[deploy]
+startCommand = "uvicorn app.main:app --host 0.0.0.0 --port ${PORT:-8080}"
+healthcheckPath = "/health"
+healthcheckTimeout = 30
+restartPolicyType = "ON_FAILURE"
+
+# Development environment — fast feedback, minimal resources
+[environments.dev.deploy]
+healthcheckTimeout = 15
+
+# Staging environment — mirrors production settings
+[environments.stage.deploy]
+healthcheckTimeout = 30
+
+# Production environment — zero-downtime deployments
+[environments.production.deploy]
+healthcheckTimeout = 60
+overlapSeconds = 30
+
+# Pull request ephemeral environments — lightweight
+[environments.pr.deploy]
+healthcheckTimeout = 15
+restartPolicyType = "NEVER"

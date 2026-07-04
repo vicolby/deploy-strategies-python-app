@@ -44,6 +44,10 @@ async def lifespan(app: FastAPI) -> AsyncGenerator[None]:
 app = FastAPI(lifespan=lifespan)
 Instrumentator().instrument(app).expose(app)
 
+@app.get("/health")
+async def health() -> dict[str, str]:
+    return {"status": "ok"}
+
 async def get_db() -> AsyncGenerator[AsyncSession]:
     async with AsyncSessionLocal() as session:
         yield session
