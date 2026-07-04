@@ -35,7 +35,7 @@ jobs:
           railway up \
             --project 52df3a49-9ae7-46be-9167-af417821d4c1 \
             --environment 334613e1-2078-4005-a1c6-b47098cf62d2 \
-            --service a773fc1a-74b3-44ab-b4b2-156faf356185 \
+            --service python-app \
             --detach \
             --verbose \
             -m "dev deploy: ${{ github.event.workflow_run.head_sha }}"
