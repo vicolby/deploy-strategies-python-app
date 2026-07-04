@@ -55,9 +55,13 @@ dmypy.json
 
 # uv
 # uv.lock  # keep in repo for Railway reproducible builds
+requirements.txt
 
 # OS
 .DS_Store
 
 # Logs
 *.log
+
+# Playwright
+.playwright-mcp/
