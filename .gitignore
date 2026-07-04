@@ -53,11 +53,13 @@ dmypy.json
 # ruff
 .ruff_cache/
 
-# uv
-uv.lock
+requirements.txt
 
 # OS
 .DS_Store
 
 # Logs
 *.log
+
+# Playwright
+.playwright-mcp/
