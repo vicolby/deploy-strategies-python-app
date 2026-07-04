@@ -17,6 +17,7 @@ jobs:
       - uses: actions/checkout@v4
         with:
           ref: ${{ github.event.workflow_run.head_sha }}
+          fetch-depth: 0
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -24,7 +25,7 @@ jobs:
           node-version: '20'
 
       - name: Install Railway CLI
-        run: npm install -g @railway/cli@5.19.0
+        run: npm install -g @railway/cli@5.2.0
 
       - name: Deploy to Railway Stage
         id: deploy
@@ -36,5 +37,6 @@ jobs:
             --environment 09577fcf-d705-4b2f-bdec-f0f0f992c5fc \
             --service a773fc1a-74b3-44ab-b4b2-156faf356185 \
             --detach \
+            --verbose \
             -m "stage deploy: ${{ github.event.workflow_run.head_sha }}"
           echo "url=https://python-app-stage.up.railway.app" >> "$GITHUB_OUTPUT"
