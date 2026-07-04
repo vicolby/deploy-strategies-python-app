@@ -53,8 +53,6 @@ dmypy.json
 # ruff
 .ruff_cache/
 
-# uv
-# uv.lock  # keep in repo for Railway reproducible builds
 requirements.txt
 
 # OS
