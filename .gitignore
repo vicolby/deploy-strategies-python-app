@@ -54,7 +54,7 @@ dmypy.json
 .ruff_cache/
 
 # uv
-uv.lock
+# uv.lock  # keep in repo for Railway reproducible builds
 
 # OS
 .DS_Store
