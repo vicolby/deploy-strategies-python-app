@@ -1,0 +1,52 @@
+name: Deploy to Production
+
+on:
+  push:
+    tags:
+      - 'release*'
+
+jobs:
+  verify-main-branch:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Verify tag is on main branch
+        run: |
+          git fetch origin main
+          if git branch -r --contains ${{ github.sha }} | grep -q "origin/main"; then
+            echo "✅ Tag ${{ github.ref_name }} is on main branch"
+          else
+            echo "❌ Tag ${{ github.ref_name }} is not on main branch"
+            exit 1
+          fi
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: verify-main-branch
+    environment:
+      name: production
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway Production
+        id: deploy
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up \
+            --project 52df3a49-9ae7-46be-9167-af417821d4c1 \
+            --environment ac9dd647-5560-4009-9466-c8192b20d5a1 \
+            --service a773fc1a-74b3-44ab-b4b2-156faf356185 \
+            --detach \
+            -m "prod deploy: ${{ github.ref_name }} (${{ github.sha }})"
+          echo "url=https://python-app-prod.up.railway.app" >> "$GITHUB_OUTPUT"

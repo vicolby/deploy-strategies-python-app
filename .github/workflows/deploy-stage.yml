@@ -1,0 +1,32 @@
+name: Deploy to Stage
+
+on:
+  push:
+    branches: [main]
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    needs: []
+    environment:
+      name: stage
+      url: ${{ steps.deploy.outputs.url }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install Railway CLI
+        run: npm install -g @railway/cli
+
+      - name: Deploy to Railway Stage
+        id: deploy
+        env:
+          RAILWAY_TOKEN: ${{ secrets.RAILWAY_TOKEN }}
+        run: |
+          railway up \
+            --project 52df3a49-9ae7-46be-9167-af417821d4c1 \
+            --environment 09577fcf-d705-4b2f-bdec-f0f0f992c5fc \
+            --service a773fc1a-74b3-44ab-b4b2-156faf356185 \
+            --detach \
+            -m "stage deploy: ${{ github.sha }}"
+          echo "url=https://python-app-stage.up.railway.app" >> "$GITHUB_OUTPUT"
