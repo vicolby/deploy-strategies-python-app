@@ -1,0 +1,26 @@
+{
+  "name": "python-app",
+  "version": "1.0.0",
+  "description": "",
+  "homepage": "https://github.com/vicolby/deploy-strategies-python-app#readme",
+  "bugs": {
+    "url": "https://github.com/vicolby/deploy-strategies-python-app/issues"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/vicolby/deploy-strategies-python-app.git"
+  },
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "main": "index.js",
+  "directories": {
+    "test": "tests"
+  },
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "railway": "^3.4.1"
+  }
+}
