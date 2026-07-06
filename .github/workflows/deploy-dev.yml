@@ -1,23 +1,39 @@
 name: Deploy to Dev
 
 on:
-  workflow_run:
-    workflows: ["CI"]
-    types: [completed]
+  push:
+    branches: [dev]
 
 jobs:
   deploy:
     runs-on: ubuntu-latest
-    if: ${{ github.event.workflow_run.conclusion == 'success' && github.event.workflow_run.head_branch == 'dev' }}
     environment:
       name: dev
       url: ${{ steps.deploy.outputs.url }}
 
     steps:
       - uses: actions/checkout@v4
-        with:
-          ref: ${{ github.event.workflow_run.head_sha }}
-          fetch-depth: 0
+
+      - name: Wait for CI to pass
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          sha="${{ github.sha }}"
+          for i in $(seq 1 90); do
+            ci=$(gh run list --commit "$sha" --workflow ci.yml --json status,conclusion -q '.[0] // empty')
+            if [ -z "$ci" ]; then echo "CI run not found yet for $sha"; sleep 10; continue; fi
+            status=$(echo "$ci" | jq -r '.status')
+            conclusion=$(echo "$ci" | jq -r '.conclusion')
+            if [ "$status" = "completed" ]; then
+              if [ "$conclusion" = "success" ]; then echo "CI passed for $sha"; exit 0; fi
+              echo "::error::CI $conclusion for $sha; aborting deploy"
+              exit 1
+            fi
+            echo "CI status: $status ($conclusion) — waiting..."
+            sleep 10
+          done
+          echo "::error::Timed out waiting for CI on $sha"
+          exit 1
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -38,5 +54,5 @@ jobs:
             --service python-app \
             --detach \
             --verbose \
-            -m "dev deploy: ${{ github.event.workflow_run.head_sha }}"
+            -m "dev deploy: ${{ github.sha }}"
           echo "url=https://python-app-dev.up.railway.app" >> "$GITHUB_OUTPUT"
