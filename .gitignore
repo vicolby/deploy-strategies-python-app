@@ -63,3 +63,6 @@ requirements.txt
 
 # Playwright
 .playwright-mcp/
+
+# node
+node_modules
